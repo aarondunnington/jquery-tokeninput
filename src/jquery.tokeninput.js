@@ -45,6 +45,7 @@ var DEFAULT_SETTINGS = {
     onAdd: null,
     onDelete: null,
     onReady: null,
+    onSelect: null,
 
     // Other settings
     idPrefix: "token-input-",
@@ -118,8 +119,15 @@ var methods = {
     get: function() {
         return this.data("tokenInputObject").getTokens();
     },
-    toggleDisabled: function(disable) {
+	toggleDisabled: function(disable) {
         this.data("tokenInputObject").toggleDisabled(disable);
+        return this;
+    },
+    queryText: function() {
+        return this.data("tokenInputObject").queryText();
+    },
+    clearQueryText: function() {
+        this.data("tokenInputObject").clearQueryText();
         return this;
     }
 }
@@ -426,6 +434,14 @@ $.TokenList = function (input, url_or_data, settings) {
         });
     }
 
+    this.queryText = function() {
+      return input_box.val();
+    }
+
+    this.clearQueryText = function() {
+      input_box.val("");
+    }
+
     this.getTokens = function() {
         return saved_tokens;
     }
@@ -522,6 +538,15 @@ $.TokenList = function (input, url_or_data, settings) {
 
     // Add a token to the token list based on user input
     function add_token (item) {
+        // Give caller a chance to screen selection
+        var selectCallback = settings.onSelect;
+        if($.isFunction(selectCallback) &&
+            !selectCallback.call(hidden_input, item)) {
+            input_box.val("");
+            hide_dropdown();
+            return;
+        }
+
         var callback = settings.onAdd;
 
         // See if the token already exists and select it if we don't want duplicates
@@ -674,7 +699,7 @@ $.TokenList = function (input, url_or_data, settings) {
                 top: $(token_list).offset().top + $(token_list).outerHeight(),
                 left: $(token_list).offset().left,
                 width: $(token_list).outerWidth(),
-                'z-index': 999
+                'z-index': 99999
             })
             .show();
     }
