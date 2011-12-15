@@ -141,6 +141,10 @@ var methods = {
     hide: function() {
         this.data("tokenInputObject").hide();
         return this;
+    },
+    deselect: function() {
+        this.data("tokenInputObject").deselect();
+        return this;
     }
 }
 
@@ -468,6 +472,10 @@ $.TokenList = function (input, url_or_data, settings) {
     
     this.hide = function() {
         settings.hidden = true;
+    }
+
+    this.deselect = function() {
+        toggle_select_token(selected_token);
     }
 
     //
