@@ -52,7 +52,10 @@ var DEFAULT_SETTINGS = {
     idPrefix: "token-input-",
 
     // Keep track if the input is currently in disabled mode
-    disabled: false
+    disabled: false,
+    
+    // Keep track of hidden state
+    hidden: false
 };
 
 // Default classes to use when theming
@@ -130,6 +133,14 @@ var methods = {
     clearQueryText: function() {
         this.data("tokenInputObject").clearQueryText();
         return this;
+    },
+    show: function() {
+        this.data("tokenInputObject").show();
+        return this;
+    },
+    hide: function() {
+        this.data("tokenInputObject").hide();
+        return this;
     }
 }
 
@@ -205,7 +216,7 @@ $.TokenList = function (input, url_or_data, settings) {
         })
         .attr("id", settings.idPrefix + input.id)
         .focus(function () {
-            if (settings.disabled) {
+            if (settings.disabled || settings.hidden) {
                 return false;
             } else
             if (settings.tokenLimit === null || settings.tokenLimit !== token_count) {
@@ -436,11 +447,11 @@ $.TokenList = function (input, url_or_data, settings) {
     }
 
     this.queryText = function() {
-      return input_box.val();
+        return input_box.val();
     }
 
     this.clearQueryText = function() {
-      input_box.val("");
+        input_box.val("");
     }
 
     this.getTokens = function() {
@@ -449,6 +460,14 @@ $.TokenList = function (input, url_or_data, settings) {
 
     this.toggleDisabled = function(disable) {
         toggleDisabled(disable);
+    }
+
+    this.show = function() {
+        settings.hidden = false;
+    }
+    
+    this.hide = function() {
+        settings.hidden = true;
     }
 
     //
