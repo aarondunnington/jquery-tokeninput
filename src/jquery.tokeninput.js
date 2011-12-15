@@ -475,7 +475,7 @@ $.TokenList = function (input, url_or_data, settings) {
     }
 
     this.deselect = function() {
-        toggle_select_token(selected_token);
+        deselect_token($(selected_token), POSITION.END);
     }
 
     //
@@ -661,11 +661,13 @@ $.TokenList = function (input, url_or_data, settings) {
             deselect_token(token, POSITION.END);
         } else {
             select_token(token);
-            var callback = settings.onSelect;
-            if($.isFunction(callback)) {
-              var token_data = $.data(token.get(0), "tokeninput");
-              callback.call(hidden_input, token_data);
-            }
+            setTimeout(function(){
+              var callback = settings.onSelect;
+              if($.isFunction(callback)) {
+                var token_data = $.data(token.get(0), "tokeninput");
+                callback.call(hidden_input, token_data);
+              }
+            }, 5);
         }
     }
 
