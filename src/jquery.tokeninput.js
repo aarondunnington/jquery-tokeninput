@@ -45,6 +45,7 @@ var DEFAULT_SETTINGS = {
     onAdd: null,
     onDelete: null,
     onReady: null,
+    onBeforeAdd: null,
     onSelect: null,
 
     // Other settings
@@ -119,7 +120,7 @@ var methods = {
     get: function() {
         return this.data("tokenInputObject").getTokens();
     },
-	toggleDisabled: function(disable) {
+    toggleDisabled: function(disable) {
         this.data("tokenInputObject").toggleDisabled(disable);
         return this;
     },
@@ -539,9 +540,9 @@ $.TokenList = function (input, url_or_data, settings) {
     // Add a token to the token list based on user input
     function add_token (item) {
         // Give caller a chance to screen selection
-        var selectCallback = settings.onSelect;
-        if($.isFunction(selectCallback) &&
-            !selectCallback.call(hidden_input, item)) {
+        var beforeAddCallback = settings.onBeforeAdd;
+        if($.isFunction(beforeAddCallback) &&
+            !beforeAddCallback.call(hidden_input, item)) {
             input_box.val("");
             hide_dropdown();
             return;
@@ -633,6 +634,11 @@ $.TokenList = function (input, url_or_data, settings) {
             deselect_token(token, POSITION.END);
         } else {
             select_token(token);
+            var callback = settings.onSelect;
+            if($.isFunction(callback)) {
+              var token_data = $.data(token.get(0), "tokeninput");
+              callback.call(hidden_input, token_data);
+            }
         }
     }
 
