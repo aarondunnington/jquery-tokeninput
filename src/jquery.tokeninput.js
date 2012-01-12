@@ -145,6 +145,11 @@ var methods = {
     deselect: function() {
         this.data("tokenInputObject").deselect();
         return this;
+    },
+    destroy: function() {
+        this.data("tokenInputObject").destroy();
+        this.removeData("tokenInputObject");
+        return this;
     }
 }
 
@@ -476,6 +481,11 @@ $.TokenList = function (input, url_or_data, settings) {
 
     this.deselect = function() {
         deselect_token($(selected_token), POSITION.END);
+    }
+
+    this.destroy = function() {
+        token_list.remove();
+        dropdown.remove();
     }
 
     //
